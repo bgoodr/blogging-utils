@@ -1,3 +1,5 @@
+;; -*-mode: lisp-interaction; -*-
+
 (with-current-buffer "template-stretch-denim-brents-color-scheme.xml"
   (goto-char (point-min))
   (let (names)
@@ -42,11 +44,3 @@
            (pp-to-string elem))
          elems
          "\n"))))
-("startSide"
- (("#header-wrapper")
-  ("#content-wrapper")
-  ("#main-wrapper")
-  ("#blog-pager-newer-link")
-  (".sidebar" "li")
-  (".profile-img")
-  ("#footer" ".widget")))
