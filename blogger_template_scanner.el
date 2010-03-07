@@ -13,10 +13,31 @@
 				  "\""
 				  )
 			      nil t)
-      (let ((name (match-string-no-properties 1)))
-	;; Temporary exclusion to debug the code herein by only looking at the
-	;; "startSide" variable:
-	(when (string-equal "startSide" name)
+      (let ((name (match-string-no-properties 1))
+	    (beg-variable-def-point (match-beginning 0))
+	    (end-variable-def-point
+	     (if (re-search-forward
+		  (rx
+		   (+ white)
+		   (+ (not (any "=")))
+		   (* white)
+		   "="
+		   (* white)
+		   "\""
+		   (+ (not (any "\"")))
+		   "\""
+		   (* white)
+		   ">")
+		  nil t)
+		 (point)
+	       (error "Could not find end of variable definition for variable named %S" name))))
+	(when (string-match (rx "type"
+				(* white)
+				"="
+				(* white)
+				"\"color\""
+				)
+			    (buffer-substring-no-properties beg-variable-def-point end-variable-def-point))
 	  (push name names))))
     (let ((elems (mapcar (lambda (name)
 			   (save-excursion
@@ -47,3 +68,4 @@
 		   (pp-to-string elem))
 		 elems
 		 "\n"))))
+
