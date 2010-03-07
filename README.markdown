@@ -36,8 +36,11 @@ use the `blogger_template_scanner.el` file to do the iteration
 TODO:
 -----
 
- - Fix the bug in the "sort" function that doesn't seem to want to
+ - DONE: Fix the bug in the "sort" function that doesn't seem to want to
    sort properly. 
+
+ - Remove the "startSide" temporary filter logic, and replace it with
+   code that only examines the variables of type "color".
 
  - Try the fixed template in the VLC blog post and look in its
    comments for more things to do. Move those comments here in and
