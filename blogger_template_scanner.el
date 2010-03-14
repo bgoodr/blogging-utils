@@ -74,6 +74,10 @@
 	elems))))
 
 
+;; Just a "nil" block to allow me to eval the entire buffer of this file to get
+;; the definitions. I then can use C-j after the expressions within the nil
+;; block to see the result, given that this file is still in lisp-interaction
+;; mode (see top of the file):
 (when nil
   ;;
   (mapconcat
@@ -81,39 +85,5 @@
      (pp-to-string elem))
    (bg-blogger-util-get-template-variable-references "template-stretch-denim-brents-color-scheme.xml")
    "\n")
-"(\"bgColor\"
- (\"body\"))
-
-(\"borderColor\"
- (\"#content-wrapper\" \".post\" \".profile-img\" \"img,\" \"table.tr-caption-container\"))
-
-(\"dateHeaderColor\"
- (\"#comments\" \".date-header\" \"h4\"))
-
-(\"headerBgColor\"
- (\"#header\"))
-
-(\"headerCornersColor\"
- (\"#header-wrapper\"))
-
-(\"headerTextColor\"
- (\"#header\" \"a,\" \"a:visited\" \"h1.title\" \"h1.title\"))
-
-(\"linkColor\"
- (\"a:link\" \"a:visited\"))
-
-(\"mainBgColor\"
- (\"#content-wrapper\" \"#main-wrapper\" \"#sidebar-wrapper\"))
-
-(\"sidebarTitleBgColor\"
- (\".sidebar\" \"h2\"))
-
-(\"sidebarTitleTextColor\"
- (\".sidebar\" \"h2\"))
-
-(\"textColor\"
- (\"#footer\" \".post-footer\" \".post-title\" \".post-title\" \".post-title\" \".sidebar\" \"a,\" \"a:visited,\" \"body\" \"strong\"))
-"
-
   ;;
   )
