@@ -50,8 +50,8 @@ TODO:
    of the variable and whose cdr is the list of CSS sections that are
    being referenced.
 
- - Generalize `bg-blogger-util-get-template-variable-references' to
-   check for a specified type of variable, whereas right now it is
+ - DONE: Generalize `bg-blogger-util-get-template-variable-references'
+   to check for a specified type of variable, whereas right now it is
    hardcoded to variables of type "color".
 
  - Create a new function that calls the new function but with both
