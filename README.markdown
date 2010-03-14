@@ -42,14 +42,17 @@ TODO:
  - DONE: Remove the "startSide" temporary filter logic, and replace it with
    code that only examines the variables of type "color".
 
- - Factor out the big chunk of lisp s-expression into a function,
-   called `bg-blogger-util-get-template-variable-references`, that
-   takes the file name name as a argument, and returns what the
-   current expression returns, which is a list of lists whose car is
-   the name of the variable and whose cdr is the list of CSS sections
-   that are being referenced. Generalize the function to check for a
-   specified type of variable, whereas right now it is hardcoded to
-   variables of type "color".
+ - DONE: Factor out the big chunk of lisp s-expression into a
+   function, called
+   `bg-blogger-util-get-template-variable-references', that takes the
+   file name name as a argument, and returns what the current
+   expression returns, which is a list of lists whose car is the name
+   of the variable and whose cdr is the list of CSS sections that are
+   being referenced.
+
+ - Generalize `bg-blogger-util-get-template-variable-references' to
+   check for a specified type of variable, whereas right now it is
+   hardcoded to variables of type "color".
 
  - Create a new function that calls the new function but with both
    files, and iterates over the result values of both to identify the
