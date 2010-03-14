@@ -56,7 +56,9 @@ TODO:
 
  - Create a new function that calls the new function but with both
    files, and iterates over the result values of both to identify the
-   common color usages.
+   common color usages. For example, find the
+   possibly-differently-named color variables that both are specified
+   in each of the sections such as, say, "#header".
 
  - Try the fixed template in the VLC blog post and look in its
    comments for more things to do. Move those comments here in and
