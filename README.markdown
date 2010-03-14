@@ -58,7 +58,39 @@ TODO:
    files, and iterates over the result values of both to identify the
    common color usages. For example, find the
    possibly-differently-named color variables that both are specified
-   in each of the sections such as, say, "#header".
+   in each of the sections such as, say, "#header". When doing my
+   first attempt at this, I discovered something new (to me anyway):
+
+   - It is possible for there to be more than one color variable
+     referenced in a given section, e.g.,:
+     
+       #header {
+         margin: 0 2%;
+         background-color: $headerBgColor;
+         color: $headerTextColor;
+         padding: 0;
+         font: $headerFont;
+         position: relative;
+       }
+
+   - It is true in some cases that the color was hardcoded, and not
+     referenced by a variable:
+
+       #header-wrapper	{
+         background: #8b2 url(http://www.blogblog.com/moto_son/headbotborder.gif) bottom $startSide repeat-x;
+         margin: 0 auto;
+         padding-top: 0;
+         padding-$endSide: 0;
+         padding-bottom: 15px;
+         padding-$startSide: 0;
+         border: 0;
+       }
+
+   Given that, my approach is a bit off: I really need to scan all of
+   the sections for any of the color attributes (those whose names are
+   in front of a ":", such as "background", "background-color", or
+   "color"), and use that as the comparison, and then searching the
+   variable reference that is involved, versus the other way around.
 
  - Try the fixed template in the VLC blog post and look in its
    comments for more things to do. Move those comments here in and

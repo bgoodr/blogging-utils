@@ -63,7 +63,7 @@
 				       (add-to-list 'refs
 						    (split-string
 						     (replace-regexp-in-string
-						      (rx (+ white) eos) ""
+						      (rx (+ (or white ",")) eos) ""
 						      (replace-regexp-in-string
 						       (rx bos (+ white)) ""
 						       (replace-regexp-in-string
@@ -73,6 +73,18 @@
 				 (list name (sort (apply 'append refs) 'string-lessp)))))
 			   (nreverse names))))
 	elems))))
+
+(defun bg-blogger-get-section-to-var-name-hash (references)
+  (let ((references-section-to-var-hash (make-hash-table :test 'equal)))
+    (mapc (lambda (var-elem)
+	    (let ((variable-name (car var-elem))
+		  (sections (cadr var-elem)))
+	      (mapc (lambda (section)
+		      (error "Stopped here: This is wrong: There could be sections that reference multiple colors in different ways for foreground and background colors.")
+		      (puthash section variable-name references-section-to-var-hash))
+		    sections)))
+	  references)
+    references-section-to-var-hash))
 
 
 ;; Just a "nil" block to allow me to eval the entire buffer of this file to get
@@ -142,5 +154,18 @@
     (".sidebar" "h2"))
    ("sidebarTextColor"
     ("#sidebar")))
+  ;; -----------------------------------------------------------------------------------------
+  (let ((vars-white )
+	(vars-green-section-to-var-hash (bg-blogger-get-section-to-var-name-hash
+					 (bg-blogger-util-get-template-variable-references "template-stretch-denim-brents-color-scheme.xml" "color")))
+	(vars-white-section-to-var-hash (bg-blogger-get-section-to-var-name-hash
+					 (bg-blogger-util-get-template-variable-references "template-Son_of_Moto_Mean_Green_Blogging_Machine_variation.xml" "color"))))
+    (maphash (lambda (section variable-name)
+	       (list section variable-name))
+	     vars-green-section-to-var-hash))
+
+
+
+
   ;; -----------------------------------------------------------------------------------------
   )
