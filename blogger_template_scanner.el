@@ -7,43 +7,44 @@
 
 (bg-safe-require "nxml-mode")
 
-(defun bg-blogger-util-get-template-variable-references (file)
+(defun bg-blogger-util-get-template-variable-references (file variable-type)
   (with-temp-buffer
     (insert-file-contents file)
     (goto-char (point-min))
-    (let (names)
+    (let ((variable-section-begin-regexp (rx "<Variable name="
+					     "\""
+					     (group (+ (not (any "\""))))
+					     "\""
+					     ))
+	  (variable-section-end-regexp (rx
+					(+ white)
+					(+ (not (any "=")))
+					(* white)
+					"="
+					(* white)
+					"\""
+					(+ (not (any "\"")))
+					"\""
+					(* white)
+					">"))
+	  (type-match-regexp (rx "type"
+				 (* white)
+				 "="
+				 (* white)
+				 "\""
+				 (eval variable-type)
+				 "\""))
+	  names)
       ;; TODO: use nxml-mode's functions to pull out the XML element in a
       ;; cleaner fashion than using a regular expression:
-      (while (re-search-forward (rx "<Variable name="
-				    "\""
-				    (group (+ (not (any "\""))))
-				    "\""
-				    )
-				nil t)
+      (while (re-search-forward variable-section-begin-regexp nil t)
 	(let ((name (match-string-no-properties 1))
 	      (beg-variable-def-point (match-beginning 0))
 	      (end-variable-def-point
-	       (if (re-search-forward
-		    (rx
-		     (+ white)
-		     (+ (not (any "=")))
-		     (* white)
-		     "="
-		     (* white)
-		     "\""
-		     (+ (not (any "\"")))
-		     "\""
-		     (* white)
-		     ">")
-		    nil t)
+	       (if (re-search-forward variable-section-end-regexp nil t)
 		   (point)
 		 (error "Could not find end of variable definition for variable named %S" name))))
-	  (when (string-match (rx "type"
-				  (* white)
-				  "="
-				  (* white)
-				  "\"color\""
-				  )
+	  (when (string-match type-match-regexp
 			      (buffer-substring-no-properties beg-variable-def-point end-variable-def-point))
 	    (push name names))))
       (let ((elems (mapcar (lambda (name)
@@ -83,22 +84,22 @@
   (mapconcat
    (lambda (elem)
      (pp-to-string elem))
-   (bg-blogger-util-get-template-variable-references "template-stretch-denim-brents-color-scheme.xml")
+   (bg-blogger-util-get-template-variable-references "template-stretch-denim-brents-color-scheme.xml" "color")
    "\n")
   ;; -----------------------------------------------------------------------------------------
   (mapconcat
    (lambda (elem)
      (pp-to-string elem))
-   (bg-blogger-util-get-template-variable-references "template-stretch-denim-brents-color-scheme.xml")
+   (bg-blogger-util-get-template-variable-references "template-stretch-denim-brents-color-scheme.xml" "color")
    "\n")
   ;; -----------------------------------------------------------------------------------------
   (insert (mapconcat
 	   (lambda (elem)
 	     (pp-to-string elem))
-	   (bg-blogger-util-get-template-variable-references "template-Son_of_Moto_Mean_Green_Blogging_Machine_variation.xml")
+	   (bg-blogger-util-get-template-variable-references "template-Son_of_Moto_Mean_Green_Blogging_Machine_variation.xml" "color")
 	   "\n"))
   ;; -----------------------------------------------------------------------------------------
-  (insert (pp (bg-blogger-util-get-template-variable-references "template-stretch-denim-brents-color-scheme.xml")))
+  (insert (pp (bg-blogger-util-get-template-variable-references "template-stretch-denim-brents-color-scheme.xml" "color")))
   (("bgColor"
     ("body"))
    ("borderColor"
@@ -122,7 +123,7 @@
    ("textColor"
     ("#footer" ".post-footer" ".post-title" ".post-title" ".post-title" ".sidebar" "a," "a:visited," "body" "strong")))
   ;; -----------------------------------------------------------------------------------------
-  (insert (pp (bg-blogger-util-get-template-variable-references "template-Son_of_Moto_Mean_Green_Blogging_Machine_variation.xml")))
+  (insert (pp (bg-blogger-util-get-template-variable-references "template-Son_of_Moto_Mean_Green_Blogging_Machine_variation.xml" "color")))
   (("blogDescriptionColor"
     ("#header" ".description"))
    ("dateHeaderColor"
