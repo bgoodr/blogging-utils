@@ -16,7 +16,7 @@ Date:     11 Jul 2006
 
 /* Variable definitions
    ====================
-   <Variable name="bodyFont" description="Text Font" type="font" default="normal normal 100% Verdana, Arial, Sans-serif;" value="normal normal 100% Verdana, Arial, Sans-serif;">
+   <Variable name="bodyFont" description="Text Font" type="font" default="normal normal 100% tahoma, 'Trebuchet MS', lucida, helvetica, sans-serif" value="normal normal 120% Times, serif">
    <Variable name="borderColor" description="Border Color" type="color" default="#cccccc" value="#cccccc">
    <Variable name="dateHeaderColor" description="Date Header Color" type="color" default="#555544" value="#ffffff">
    <Variable name="endSide" description="End side in blog language" type="automatic" default="right" value="right">
