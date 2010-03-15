@@ -16,17 +16,17 @@ Updated by: Blogger Team
 
 /* Variable definitions
    ====================
-   <Variable name="blogDescriptionColor" description="Blog Description Color" type="color" default="#ffffee" value="#ffffee">
-   <Variable name="bodyFont" description="Text Font" type="font" default="normal normal 100% tahoma, 'Trebuchet MS', lucida, helvetica, sans-serif" value="normal normal 120% Times, serif" >
-   <Variable name="dateHeaderColor" description="Date Header Color" type="color" default="#555544" value="#555544">
-   <Variable name="endSide" description="End side in blog language" type="automatic" default="right" value="right">
-   <Variable name="hoverLinkColor" description="Link Hover Color" type="color" default="#88bb22" value="#88bb22">
-   <Variable name="linkColor" description="Link Color" type="color" default="#669922" value="#669922">
-   <Variable name="mainBgColor" description="Main Background Color" type="color" default="#ffffff" value="#000000">
-   <Variable name="mainTextColor" description="Text Color" type="color" default="#555544" value="#88bb22">
-   <Variable name="pageHeaderColor" description="Blog Title Color" type="color" default="#ffffee" value="#2b3c0b">
-   <Variable name="sidebarHeaderColor" description="Sidebar Title Color" type="color" default="#555544" value="#000000">
-   <Variable name="sidebarTextColor" description="Sidebar Text Color" type="color" default="#555544" value="#000000">
+x  <Variable name="blogDescriptionColor" description="Blog Description Color" type="color" default="#ffffee" value="#ffffee">
+na <Variable name="bodyFont" description="Text Font" type="font" default="normal normal 100% tahoma, 'Trebuchet MS', lucida, helvetica, sans-serif" value="normal normal 120% Times, serif" >
+x  <Variable name="dateHeaderColor" description="Date Header Color" type="color" default="#555544" value="#555544">
+na <Variable name="endSide" description="End side in blog language" type="automatic" default="right" value="right">
+?  <Variable name="hoverLinkColor" description="Link Hover Color" type="color" default="#88bb22" value="#88bb22">
+x  <Variable name="linkColor" description="Link Color" type="color" default="#669922" value="#669922">
+x  <Variable name="mainBgColor" description="Main Background Color" type="color" default="#ffffff" value="#000000">
+x  <Variable name="mainTextColor" description="Text Color" type="color" default="#555544" value="#88bb22">
+x  <Variable name="pageHeaderColor" description="Blog Title Color" type="color" default="#ffffee" value="#2b3c0b">
+x  <Variable name="sidebarHeaderColor" description="Sidebar Title Color" type="color" default="#555544" value="#000000">
+?  <Variable name="sidebarTextColor" description="Sidebar Text Color" type="color" default="#555544" value="#000000">
    <Variable name="startSide" description="Start side in blog language" type="automatic" default="left" value="left">
 */
 
