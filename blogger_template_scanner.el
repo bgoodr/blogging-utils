@@ -7,6 +7,25 @@
 
 (bg-safe-require "nxml-mode")
 
+(defun bg-blogger-util-get-selector-prior-to-point (&optional up-list)
+  (save-excursion
+    (and up-list (backward-up-list 1))
+    (let ((end (point)))
+      (if (re-search-backward (rx (or "*/"
+				      "}"))
+			      nil t)
+	  (match-end 0)
+	(error "No beginning of selector prior to point at %S" end))
+      (split-string
+       (replace-regexp-in-string
+	(rx (+ (or white ",")) eos) ""
+	(replace-regexp-in-string
+	 (rx bos (+ white)) ""
+	 (replace-regexp-in-string
+	  (rx white) " "
+	  (buffer-substring-no-properties (match-end 0) end))))
+       " ,"))))
+
 (defun bg-blogger-util-get-template-variable-references (file variable-type)
   (with-temp-buffer
     (insert-file-contents file)
@@ -54,25 +73,42 @@
 							 (rx (not (any "a-z" "A-Z" "0-9" "_")))))
 				     refs)
 				 (while (re-search-forward ref-regexp nil t)
-				   (save-excursion
-				     (backward-up-list 1)
-				     (let ((end (point)))
-				       (re-search-backward (rx (or "*/"
-								   "}"))
-							   nil t)
-				       (add-to-list 'refs
-						    (split-string
-						     (replace-regexp-in-string
-						      (rx (+ (or white ",")) eos) ""
-						      (replace-regexp-in-string
-						       (rx bos (+ white)) ""
-						       (replace-regexp-in-string
-							(rx white) " "
-							(buffer-substring-no-properties (match-end 0) end))))
-						     " ")))))
+
+				   (add-to-list 'refs (bg-blogger-util-get-selector-prior-to-point t)))
 				 (list name (sort (apply 'append refs) 'string-lessp)))))
 			   (nreverse names))))
 	elems))))
+
+(defun bg-blogger-util-scan-css-properties (file prop-name-list)
+  (with-temp-buffer
+    (insert-file-contents file)
+    (let* ((beg (progn
+		  (goto-char (point-min))
+		  (if (re-search-forward (rx "<b:skin>")
+					 nil t)
+		      (match-end 0)
+		    (error "cannot find <b:skin> tag"))))
+	   (end (progn
+		  (goto-char beg)
+		  (if (re-search-forward (rx "</b:skin>")
+					 nil t)
+		      (match-beginning 0)
+		    (error "cannot find </b:skin> tag")))))
+      (mapcar (lambda (prop-name)
+		(goto-char beg)
+		(let ((prop-regexp (rx (* white)
+				       (eval prop-name)
+				       (* white)
+				       ":"
+				       (* white)
+				       (group (+ (not (any white "," ";"))))))
+		      elems)
+		  (while (re-search-forward prop-regexp end t)
+		    (let ((prop-value (match-string-no-properties 1))
+			  (selector (bg-blogger-util-get-selector-prior-to-point t)))
+		      (push (list selector prop-name prop-value) elems)))
+		  elems))
+	      prop-name-list))))
 
 (defun bg-blogger-get-section-to-var-name-hash (references)
   (let ((references-section-to-var-hash (make-hash-table :test 'equal)))
@@ -112,48 +148,8 @@
 	   "\n"))
   ;; -----------------------------------------------------------------------------------------
   (insert (pp (bg-blogger-util-get-template-variable-references "template-stretch-denim-brents-color-scheme.xml" "color")))
-  (("bgColor"
-    ("body"))
-   ("borderColor"
-    ("#content-wrapper" ".post" ".profile-img" "img," "table.tr-caption-container"))
-   ("dateHeaderColor"
-    ("#comments" ".date-header" "h4"))
-   ("headerBgColor"
-    ("#header"))
-   ("headerCornersColor"
-    ("#header-wrapper"))
-   ("headerTextColor"
-    ("#header" "a," "a:visited" "h1.title" "h1.title"))
-   ("linkColor"
-    ("a:link" "a:visited"))
-   ("mainBgColor"
-    ("#content-wrapper" "#main-wrapper" "#sidebar-wrapper"))
-   ("sidebarTitleBgColor"
-    (".sidebar" "h2"))
-   ("sidebarTitleTextColor"
-    (".sidebar" "h2"))
-   ("textColor"
-    ("#footer" ".post-footer" ".post-title" ".post-title" ".post-title" ".sidebar" "a," "a:visited," "body" "strong")))
   ;; -----------------------------------------------------------------------------------------
   (insert (pp (bg-blogger-util-get-template-variable-references "template-Son_of_Moto_Mean_Green_Blogging_Machine_variation.xml" "color")))
-  (("blogDescriptionColor"
-    ("#header" ".description"))
-   ("dateHeaderColor"
-    ("h2.date-header"))
-   ("hoverLinkColor"
-    ("a:active" "a:hover"))
-   ("linkColor"
-    ("a:link," "a:visited"))
-   ("mainBgColor"
-    ("#outer-wrapper"))
-   ("mainTextColor"
-    ("body"))
-   ("pageHeaderColor"
-    ("#header" "a," "a:link," "a:visited" "h1" "h1" "h1" "h1"))
-   ("sidebarHeaderColor"
-    (".sidebar" "h2"))
-   ("sidebarTextColor"
-    ("#sidebar")))
   ;; -----------------------------------------------------------------------------------------
   (let ((vars-white )
 	(vars-green-section-to-var-hash (bg-blogger-get-section-to-var-name-hash
@@ -163,9 +159,13 @@
     (maphash (lambda (section variable-name)
 	       (list section variable-name))
 	     vars-green-section-to-var-hash))
-
-
-
-
   ;; -----------------------------------------------------------------------------------------
+  ;; Scan for property names given by prop-name-list, find the values associated
+  ;; with them and the selectors they are used in:
+  (let ((prop-name-list (list "background"
+			      "background-color"
+			      "color")))
+    (nth 2 (bg-blogger-util-scan-css-properties "template-stretch-denim-brents-color-scheme.xml" prop-name-list)))
+  ((("#footer") "color" "$textColor") ((".sidebar") "color" "$textColor") ((".sidebar h2") "color" "$sidebarTitleTextColor") ((".sidebar h2") "color" "$sidebarTitleBgColor") ((".deleted-comment") "color" "gray") (("#comments h4") "color" "$dateHeaderColor") ((".post-footer") "color" "$textColor") ((".post-title a, .post-title a:visited, .post-title strong") "color" "$textColor") ((".date-header") "color" "$dateHeaderColor") (("#sidebar-wrapper") "color" "$mainBgColor") (("#main-wrapper") "color" "$mainBgColor") (("#content-wrapper") "color" "$mainBgColor") ...)
+  ;;
   )
