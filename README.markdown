@@ -54,9 +54,9 @@ TODO:
    to check for a specified type of variable, whereas right now it is
    hardcoded to variables of type "color".
 
- - Create a new function that calls the new function but with both
-   files, and iterates over the result values of both to identify the
-   common color usages. For example, find the
+ - DONE: Create a new function that calls the new function but with
+   both files, and iterates over the result values of both to identify
+   the common color usages. For example, find the
    possibly-differently-named color variables that both are specified
    in each of the sections such as, say, "#header". When doing my
    first attempt at this, I discovered something new (to me anyway):
@@ -91,6 +91,19 @@ TODO:
    in front of a ":", such as "background", "background-color", or
    "color"), and use that as the comparison, and then searching the
    variable reference that is involved, versus the other way around.
+
+ - I've now scanned out the data into the form of a multi-level hash
+   table keyed by prop name, then selector, then property name and
+   value pairs as a list.  After having done that much, I see how the
+   tags used in both templates are quite far apart in structure, and I
+   will have little choice but to reconcile each color setting by hand
+   if I am to make any progress in the short-term goal of making the
+   colors correct for the new template.
+
+   But the exercise did result in some useful parsing techniques that
+   will be needed for a later project I am considering that is driven
+   by the Mozex Firefox extension, whereby changes to the template can
+   be sent to Firefox for preview.
 
  - Try the fixed template in the VLC blog post and look in its
    comments for more things to do. Move those comments here in and
