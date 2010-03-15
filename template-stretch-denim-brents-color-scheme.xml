@@ -18,12 +18,12 @@ Date:     11 Jul 2006
    ====================
    <Variable name="bodyFont" description="Text Font" type="font" default="normal normal 100% Verdana, Arial, Sans-serif;" value="normal normal 100% Verdana, Arial, Sans-serif;">
    <Variable name="borderColor" description="Border Color" type="color" default="#cccccc" value="#cccccc">
-   <Variable name="dateHeaderColor" description="Date Header Color" type="color" default="#555544" value="#555544">
+   <Variable name="dateHeaderColor" description="Date Header Color" type="color" default="#555544" value="#ffffff">
    <Variable name="endSide" description="End side in blog language" type="automatic" default="right" value="right">
-   <Variable name="headerBgColor" description="Page Header Background Color" type="color" default="#336699" value="#336699">
-   <Variable name="headerCornersColor" description="Page Header Corners Color" type="color" default="#528bc5" value="#528bc5">
+   <Variable name="headerBgColor" description="Page Header Background Color" type="color" default="#336699" value="#000000">
+   <Variable name="headerCornersColor" description="Page Header Corners Color" type="color" default="#528bc5" value="#000000">
    <Variable name="headerFont" description="Page Header Font" type="font" default="normal normal 210% Verdana, Arial, Sans-serif;" value="normal normal 210% Verdana, Arial, Sans-serif;">
-   <Variable name="headerTextColor" description="Page Header Text Color" type="color" default="#ffffee" value="#2b3c0b">
+   <Variable name="headerTextColor" description="Page Header Text Color" type="color" default="#ffffee" value="#78B749">
    <Variable name="linkColor" description="Link Color" type="color" default="#669922" value="#669922">
    <Variable name="mainBgColor" description="Main Background Color" type="color" default="#ffffff" value="#000000">
    <Variable name="sidebarTitleBgColor" description="Sidebar Title Background Color" type="color" default="#555544" value="#000000">
@@ -961,7 +961,7 @@ body#layout #header {
       <b:if cond='data:totalFollowerCount != &quot;&quot;'>
         <h2 class='title'><data:title/> (<data:totalFollowerCount/>)</h2>
       </b:if>
-    </b:if>
+    </b:if>  
   </b:if>
   <div class='widget-content'>
     <div expr:id='data:widget.instanceId + &quot;-wrapper&quot;'>
@@ -990,7 +990,7 @@ body#layout #header {
               </a>
             </div>
           </b:if>
-
+  
           <div class='followers-grid'>
             <b:if cond='data:totalFollowerCount == 0'>
               <div class='profile-link item-control following-follow-this'>
@@ -1009,7 +1009,7 @@ body#layout #header {
             </b:loop>
             <div class='clear'/>
           </div>
-
+  
           <div class='followers-canvas profile-link'>
             <data:followersFooterMessage/>
             <span class='item-control following-not-admin'>
