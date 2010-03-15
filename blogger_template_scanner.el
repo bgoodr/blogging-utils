@@ -79,9 +79,16 @@
 			   (nreverse names))))
 	elems))))
 
+(defun bg-blogger-util-puthash-unique-values (key value hash)
+  (let ((prev-values (gethash key hash)))
+    (add-to-list 'prev-values value)
+    (puthash key prev-values hash)))
+
 (defun bg-blogger-util-scan-css-properties (file prop-name-list)
   (with-temp-buffer
     (insert-file-contents file)
+    ;; make dashes be a part of words
+    (modify-syntax-entry (string-to-char "-") "w")
     (let* ((beg (progn
 		  (goto-char (point-min))
 		  (if (re-search-forward (rx "<b:skin>")
@@ -93,22 +100,25 @@
 		  (if (re-search-forward (rx "</b:skin>")
 					 nil t)
 		      (match-beginning 0)
-		    (error "cannot find </b:skin> tag")))))
+		    (error "cannot find </b:skin> tag"))))
+	   (prop-name-to-selector-hash (make-hash-table :test 'equal)))
       (mapcar (lambda (prop-name)
 		(goto-char beg)
-		(let ((prop-regexp (rx (* white)
+		(let ((prop-regexp (rx bow
 				       (eval prop-name)
+				       eow
 				       (* white)
 				       ":"
 				       (* white)
 				       (group (+ (not (any white "," ";"))))))
-		      elems)
+		      (selector-hash (make-hash-table :test 'equal)))
 		  (while (re-search-forward prop-regexp end t)
 		    (let ((prop-value (match-string-no-properties 1))
 			  (selector (bg-blogger-util-get-selector-prior-to-point t)))
-		      (push (list selector prop-name prop-value) elems)))
-		  elems))
-	      prop-name-list))))
+		      (bg-blogger-util-puthash-unique-values selector (list prop-name prop-value) selector-hash)))
+		  (puthash prop-name selector-hash prop-name-to-selector-hash)))
+	      prop-name-list)
+      prop-name-to-selector-hash)))
 
 (defun bg-blogger-get-section-to-var-name-hash (references)
   (let ((references-section-to-var-hash (make-hash-table :test 'equal)))
@@ -121,6 +131,27 @@
 		    sections)))
 	  references)
     references-section-to-var-hash))
+
+(defun bg-blogger-util-dump-selectors (props-green-hash)
+  (let (tmp-list)
+    (maphash (lambda (prop-name selector-hash)
+	       (maphash (lambda (selector prop-name-value-pairs)
+			  (push (format (concat
+					 (mapconcat 'identity selector "|")
+					 " "
+					 "{  \n"
+					 (mapconcat (lambda (pair)
+						      (let ((prop-name (nth 0 pair))
+							    (prop-value (nth 1 pair)))
+							(format (concat "    " prop-name " : " prop-value))))
+						    prop-name-value-pairs
+						    "\n  ")
+					 "\n}"
+					 "\n"))
+				tmp-list))
+			selector-hash))
+	     props-green-hash)
+    (mapconcat 'identity tmp-list "")))
 
 
 ;; Just a "nil" block to allow me to eval the entire buffer of this file to get
@@ -165,25 +196,13 @@
   (let* ((prop-name-list (list "background"
 			       "background-color"
 			       "color"))
-	 (props-green (bg-blogger-util-scan-css-properties "template-stretch-denim-brents-color-scheme.xml" prop-name-list))
-	 (values-hash (make-hash-table :test 'equal)))
-    (mapcar (lambda (prop)
-	      (mapc (lambda (value)
-		      (puthash (nth 2 value) t values-hash))
-		    prop))
-	    props-green)
-    (let (values)
-      (maphash (lambda (k v)
-		 (push k values))
-	       values-hash)
-      (mapconcat 'identity values "\n")))
+	 (props-green-hash (bg-blogger-util-scan-css-properties "template-stretch-denim-brents-color-scheme.xml" prop-name-list)))
+    (bg-blogger-util-dump-selectors props-green-hash))
+  ;; -----------------------------------------------------------------------------------------
+  (let* ((prop-name-list (list "background"
+			       "background-color"
+			       "color"))
+	 (props-green-hash (bg-blogger-util-scan-css-properties "template-Son_of_Moto_Mean_Green_Blogging_Machine_variation.xml" prop-name-list)))
+    (bg-blogger-util-dump-selectors props-green-hash))
   ;;
   )
-
-
-
-
-
-
-
-
