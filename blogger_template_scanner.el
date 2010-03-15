@@ -162,10 +162,28 @@
   ;; -----------------------------------------------------------------------------------------
   ;; Scan for property names given by prop-name-list, find the values associated
   ;; with them and the selectors they are used in:
-  (let ((prop-name-list (list "background"
-			      "background-color"
-			      "color")))
-    (nth 2 (bg-blogger-util-scan-css-properties "template-stretch-denim-brents-color-scheme.xml" prop-name-list)))
-  ((("#footer") "color" "$textColor") ((".sidebar") "color" "$textColor") ((".sidebar h2") "color" "$sidebarTitleTextColor") ((".sidebar h2") "color" "$sidebarTitleBgColor") ((".deleted-comment") "color" "gray") (("#comments h4") "color" "$dateHeaderColor") ((".post-footer") "color" "$textColor") ((".post-title a, .post-title a:visited, .post-title strong") "color" "$textColor") ((".date-header") "color" "$dateHeaderColor") (("#sidebar-wrapper") "color" "$mainBgColor") (("#main-wrapper") "color" "$mainBgColor") (("#content-wrapper") "color" "$mainBgColor") ...)
+  (let* ((prop-name-list (list "background"
+			       "background-color"
+			       "color"))
+	 (props-green (bg-blogger-util-scan-css-properties "template-stretch-denim-brents-color-scheme.xml" prop-name-list))
+	 (values-hash (make-hash-table :test 'equal)))
+    (mapcar (lambda (prop)
+	      (mapc (lambda (value)
+		      (puthash (nth 2 value) t values-hash))
+		    prop))
+	    props-green)
+    (let (values)
+      (maphash (lambda (k v)
+		 (push k values))
+	       values-hash)
+      (mapconcat 'identity values "\n")))
   ;;
   )
+
+
+
+
+
+
+
+
